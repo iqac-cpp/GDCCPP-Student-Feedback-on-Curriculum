@@ -1,0 +1,836 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GDC Cheepurupalli Curriculum Feedback 2025-26</title>
+  <style>
+    :root {
+      --navy:#153a5b;
+      --blue:#eaf3f8;
+      --line:#cbd8e2;
+      --text:#21303d;
+      --muted:#647585;
+      --success:#187747;
+      --danger:#b42318;
+      --card:#ffffff;
+      --page:#eef3f7;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      font-family:Arial, "Noto Sans Telugu", sans-serif;
+      background:var(--page);
+      color:var(--text);
+    }
+    .shell { width:min(100% - 24px, 980px); margin:24px auto 50px; }
+    .hero {
+      border-radius:16px 16px 0 0;
+      background:linear-gradient(135deg,#153a5b,#285d84);
+      color:white;
+      padding:24px 22px 18px;
+      box-shadow:0 12px 36px rgba(21,58,91,.14);
+    }
+    .reports-link { position:absolute; right:16px; top:14px; padding:8px 12px;
+      border:1px solid rgba(255,255,255,.7); border-radius:8px;
+      color:#fff; text-decoration:none; font-size:12px; font-weight:700; }
+    .reports-link:hover, .reports-link:focus { background:rgba(255,255,255,.18); }
+    .hero { position:relative; }
+    .hero h1 { margin:0; text-align:center; font-size:24px; }
+    .hero p { margin:7px 0 0; text-align:center; opacity:.9; font-size:13px; }
+    .progress-wrap { margin-top:16px; display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; }
+    .progress-track { height:8px; background:rgba(255,255,255,.22); border-radius:99px; overflow:hidden; }
+    .progress-bar { height:100%; width:0; background:#fff; transition:width .2s ease; }
+    .progress-text { font-size:12px; font-weight:700; }
+    .panel, .scale-panel, .summary-panel {
+      background:var(--card);
+      border:1px solid #d9e3eb;
+      box-shadow:0 5px 20px rgba(30,48,67,.05);
+    }
+    .panel { margin-top:14px; border-radius:12px; }
+    .panel-body { padding:18px; }
+    .section-title { margin:0 0 14px; color:var(--navy); font-size:17px; }
+    .instructions p { margin:0; font-size:13px; line-height:1.55; }
+    .details-grid {
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:12px;
+    }
+    .field { grid-column:span 4; }
+    .field.college { grid-column:span 4; }
+        .field.student-name { grid-column:span 6; }
+        label {
+      display:block;
+      margin-bottom:6px;
+      color:#38516a;
+      font-size:12px;
+      font-weight:700;
+    }
+    select, input, textarea {
+      width:100%;
+      min-height:43px;
+      padding:9px 10px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      color:var(--text);
+      font:inherit;
+    }
+    input[readonly] { background:#f6f8fa; }
+    textarea { min-height:110px; resize:vertical; line-height:1.45; }
+    .field-help { margin-top:4px; color:var(--muted); font-size:10px; }
+    .scale-panel { margin-top:14px; padding:12px; border-radius:12px; }
+    .scale-inner { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+    .scale-key {
+      padding:8px 5px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      text-align:center;
+      background:#f7fafc;
+    }
+    .scale-key strong { display:block; font-size:13px; }
+    .scale-key span { display:block; margin-top:3px; font-size:10px; }
+
+    .scale-poor { background:#d92d27; border-color:#c62520; color:#fff; }
+    .scale-satisfactory { background:#f2a3a6; border-color:#e38e92; color:#5b2427; }
+    .scale-good { background:#b9efd1; border-color:#9cdeb9; color:#24543a; }
+    .scale-very-good { background:#5ad47d; border-color:#4bc16e; color:#174c2a; }
+    .scale-excellent { background:#206b3c; border-color:#185b32; color:#fff; }
+
+    .scale-poor strong, .scale-excellent strong { color:#fff; }
+    .scale-satisfactory strong, .scale-good strong, .scale-very-good strong { color:inherit; }
+    .questions { margin-top:14px; display:grid; gap:10px; }
+    .question-card {
+      background:#fff;
+      border:1px solid #d8e2e9;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 4px 14px rgba(20,45,67,.04);
+    }
+    .question-top { display:grid; grid-template-columns:38px 1fr; gap:10px; padding:13px; }
+    .q-number {
+      width:32px; height:32px; display:grid; place-items:center;
+      border-radius:50%; background:var(--blue); color:var(--navy); font-weight:800;
+    }
+    .q-en { font-size:13px; font-weight:700; line-height:1.4; }
+    .q-te { margin-top:5px; color:#506170; font-size:12px; line-height:1.5; }
+    .rating-group {
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:6px;
+      padding:0 13px 13px 61px;
+    }
+    .rating-option input { position:absolute; opacity:0; pointer-events:none; }
+    .rating-option label {
+      min-height:45px;
+      margin:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:2px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      cursor:pointer;
+      background:#fff;
+      text-align:center;
+    }
+    .rating-option label b { color:var(--navy); font-size:12px; }
+    .rating-option label small { color:var(--muted); font-size:9px; }
+    /* Question-level options stay neutral.
+       The color meaning is shown once in the rating guide above Question 1. */
+    .rating-option label {
+      background:#fff;
+      border-color:var(--line);
+      color:var(--text);
+      transition:all .15s ease;
+    }
+
+    .rating-option label b {
+      color:var(--navy);
+    }
+
+    .rating-option label small {
+      color:var(--muted);
+    }
+
+    .rating-option label:hover {
+      background:#f3f7fa;
+      border-color:#9fb6c8;
+    }
+
+    /* Selected option uses the same colour as the rating scale above. */
+    .rating-option input[value="1"]:checked + label {
+      background:#d92d27;
+      border-color:#c62520;
+      color:#fff;
+      outline:3px solid rgba(217,45,39,.20);
+    }
+
+    .rating-option input[value="2"]:checked + label {
+      background:#f2a3a6;
+      border-color:#e38e92;
+      color:#5b2427;
+      outline:3px solid rgba(242,163,166,.28);
+    }
+
+    .rating-option input[value="3"]:checked + label {
+      background:#b9efd1;
+      border-color:#9cdeb9;
+      color:#24543a;
+      outline:3px solid rgba(185,239,209,.38);
+    }
+
+    .rating-option input[value="4"]:checked + label {
+      background:#5ad47d;
+      border-color:#4bc16e;
+      color:#174c2a;
+      outline:3px solid rgba(90,212,125,.28);
+    }
+
+    .rating-option input[value="5"]:checked + label {
+      background:#206b3c;
+      border-color:#185b32;
+      color:#fff;
+      outline:3px solid rgba(32,107,60,.24);
+    }
+
+    .rating-option input:checked + label {
+      outline-offset:1px;
+      transform:translateY(-1px);
+      box-shadow:0 4px 10px rgba(21,58,91,.14);
+    }
+
+    .rating-option input[value="1"]:checked + label b,
+    .rating-option input[value="1"]:checked + label small,
+    .rating-option input[value="5"]:checked + label b,
+    .rating-option input[value="5"]:checked + label small {
+      color:#fff;
+    }
+
+    .rating-option input[value="2"]:checked + label b,
+    .rating-option input[value="2"]:checked + label small {
+      color:#5b2427;
+    }
+
+    .rating-option input[value="3"]:checked + label b,
+    .rating-option input[value="3"]:checked + label small {
+      color:#24543a;
+    }
+
+    .rating-option input[value="4"]:checked + label b,
+    .rating-option input[value="4"]:checked + label small {
+      color:#174c2a;
+    }
+    .question-card.answered { border-color:#91c5a6; }
+    .question-card.error-card { border-color:#d8655d; box-shadow:0 0 0 2px rgba(180,35,24,.08); }
+    .suggestion-panel { margin-top:14px; }
+    .summary-panel {
+      margin-top:14px;
+      border-radius:12px;
+      padding:14px 18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .summary-label { color:var(--muted); font-size:11px; font-weight:700; text-transform:uppercase; }
+    .summary-value { color:var(--navy); font-size:22px; font-weight:900; }
+    .submit-area { padding:18px 0 4px; text-align:center; }
+    .submit-btn {
+      width:min(100%,380px); min-height:48px; border:0; border-radius:10px;
+      background:var(--navy); color:#fff; font-weight:800; font-size:14px; cursor:pointer;
+    }
+    .submit-btn:disabled { opacity:.6; cursor:not-allowed; }
+    .status { min-height:20px; margin-top:9px; font-size:12px; }
+    .status.error { color:var(--danger); }
+    .privacy { text-align:center; color:var(--muted); font-size:10px; }
+    .success-modal {
+      position:fixed; inset:0; z-index:9999; display:none; align-items:center; justify-content:center;
+      padding:20px; background:rgba(7,27,48,.55);
+    }
+    .success-modal.show { display:flex; }
+    .success-dialog {
+      width:min(100%,390px); padding:27px 22px 22px; text-align:center;
+      background:#fff; border-radius:18px; box-shadow:0 22px 70px rgba(10,35,60,.28);
+    }
+    .success-icon {
+      width:66px; height:66px; margin:0 auto 15px; border-radius:50%;
+      display:grid; place-items:center; background:#eaf7ef; color:var(--success);
+      font-size:36px; font-weight:900;
+    }
+    .success-dialog h2 { margin:0 0 8px; color:var(--navy); }
+    .success-dialog p { margin:0; color:var(--muted); font-size:13px; line-height:1.5; }
+    .success-close-btn {
+      width:100%; min-height:46px; margin-top:18px; border:0; border-radius:9px;
+      background:var(--navy); color:#fff; font-weight:800; cursor:pointer;
+    }
+    @media(max-width:760px) {
+      .field, .field.college, .field.lecturer, .field.student-name,       .scale-inner { grid-template-columns:1fr; }
+      .rating-group { padding-left:13px; }
+    }
+    @media(max-width:520px) {
+      .shell { width:min(100% - 14px,980px); margin-top:8px; }
+      .hero { padding:20px 14px 15px; }
+      .hero h1 { font-size:19px; padding-top:30px; }
+      .details-grid { grid-template-columns:1fr; }
+      .field, .field.college, .field.student-name { grid-column:1; }
+      .rating-group { grid-template-columns:repeat(5,1fr); gap:4px; padding:0 8px 10px; }
+      .rating-option label { min-height:48px; padding:3px; }
+      .rating-option label small { font-size:8px; }
+      .question-top { grid-template-columns:34px 1fr; padding:10px; }
+      .summary-panel { padding:12px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <a id="reportsLink" class="reports-link" href="#" target="_blank" rel="noopener">Reports</a>
+      <h1>STUDENT FEEDBACK ON CURRICULUM</h1>
+      <p>విద్యార్థుల నుండి పాఠ్యప్రణాళికపై అభిప్రాయం · Academic Year 2025-26 · Even Semester</p>
+      <div class="progress-wrap">
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+        <div id="progressText" class="progress-text">0 / 10</div>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="panel-body instructions">
+        <h2 class="section-title">Instructions / సూచనలు</h2>
+        <p>Please rate all 10 curriculum items using the five-point scale. Give your opinion independently and provide suggestions for improvement wherever necessary.</p>
+        <p lang="te" style="margin-top:6px;">క్రింది 10 పాఠ్యప్రణాళిక అంశాలకు ఐదు స్థాయిల రేటింగ్‌లో మీ అభిప్రాయాన్ని నమోదు చేయండి. అవసరమైన చోట మెరుగుదలకు మీ సూచనలు ఇవ్వండి.</p>
+      </div>
+    </section>
+
+    <form id="feedbackForm" autocomplete="off" novalidate>
+      <section class="panel">
+        <div class="panel-body">
+          <h2 class="section-title">Feedback Details / అభిప్రాయ వివరాలు</h2>
+          <div class="details-grid">
+            <div class="field">
+              <label for="zone">Zone</label>
+              <select id="zone" name="zone" required><option value="" selected disabled>Select zone</option></select>
+            </div>
+            <div class="field">
+              <label for="district">District</label>
+              <select id="district" name="district" required disabled><option value="" selected disabled>Select district</option></select>
+            </div>
+            <div class="field college">
+              <label for="college">College Name &amp; Place</label>
+              <select id="college" name="college" required disabled><option value="" selected disabled>Select college</option></select>
+            </div>
+            <div class="field"><label for="academicYear">Academic Year</label><select id="academicYear" name="academicYear" required disabled><option value="2025-26" selected>2025-26</option></select></div>
+            <div class="field"><label for="semesterType">Type of Semester</label><select id="semesterType" name="semesterType" required disabled><option value="Even" selected>Even</option></select></div>
+            <div class="field"><label for="semester">Semester</label><select id="semester" name="semester" required disabled><option value="">Select semester type first</option></select></div>
+<input id="year" name="year" type="hidden">
+            <div class="field">
+              <label for="programme">Programme</label>
+              <select id="programme" name="programme" required><option value="" selected disabled>Select programme</option></select>
+            </div>
+            <div class="field">
+              <label for="course">Course / Major</label>
+              <select id="course" name="course" required disabled><option value="" selected disabled>Select programme first</option></select>
+            </div>
+            <input id="className" name="className" type="hidden">
+
+            <div class="field student-name">
+              <label for="studentName">Name of the Student *</label>
+              <input id="studentName" name="studentName" type="text" maxlength="120" required placeholder="Enter student name">
+            </div>
+<div class="field">
+              <label for="date">Date</label>
+              <input id="date" name="date" type="date" required>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="scale-panel">
+        <div style="margin-bottom:9px; font-size:12px; font-weight:800; color:var(--navy); text-align:center;">
+          Rating Scale / రేటింగ్ స్థాయి
+        </div>
+        <div class="scale-inner">
+          <div class="scale-key scale-poor"><strong>I</strong><span>Poor · తక్కువ స్థాయి · 1</span></div>
+          <div class="scale-key scale-satisfactory"><strong>II</strong><span>Satisfactory · సంతృప్తికరం · 2</span></div>
+          <div class="scale-key scale-good"><strong>III</strong><span>Good · మంచిది · 3</span></div>
+          <div class="scale-key scale-very-good"><strong>IV</strong><span>Very Good · చాలా మంచిది · 4</span></div>
+          <div class="scale-key scale-excellent"><strong>V</strong><span>Excellent · అత్యుత్తమం · 5</span></div>
+        </div>
+      </section>
+
+      <section id="questionCards" class="questions"></section>
+
+      <section class="panel suggestion-panel">
+        <div class="panel-body">
+          <h2 class="section-title">Suggestions for Improvement / మెరుగుదలకు సూచనలు</h2>
+          <label for="suggestions">Give suggestions for improvement *</label>
+          <textarea id="suggestions" name="suggestions" required maxlength="1500"
+            placeholder="Please enter your suggestions / దయచేసి మీ సూచనలు నమోదు చేయండి"></textarea>
+        </div>
+      </section>
+
+      <section class="summary-panel">
+        <div>
+          <div class="summary-label">Total Score</div>
+          <div id="totalScoreDisplay" class="summary-value">0 / 50</div>
+        </div>
+        <input id="totalScore" name="totalScore" type="hidden" value="0">
+      </section>
+
+      <div class="submit-area">
+        <button id="submitBtn" class="submit-btn" type="submit">SUBMIT CURRICULUM FEEDBACK</button>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+      </div>
+
+      <p class="privacy">The information submitted in this curriculum feedback form will be used for academic quality improvement and institutional review.</p>
+    </form>
+  </main>
+
+  <div id="successModal" class="success-modal" aria-hidden="true">
+    <div class="success-dialog" role="dialog" aria-modal="true">
+      <div class="success-icon">✓</div>
+      <h2>Curriculum Feedback Submitted</h2>
+      <p>Your curriculum feedback has been submitted successfully. Thank you for your valuable suggestions.</p>
+      <p style="margin-top:8px;font-size:11px;">Your response has been sent to the college feedback database.</p>
+      <button id="successCloseBtn" class="success-close-btn" type="button">CLOSE</button>
+    </div>
+  </div>
+
+<script>
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxqbWMkwDRLWM7M8ALERJwuuRO4ZK9nctjj405RuLdZEB_vR4IF1ESrkp-ZejxbfNGnyg/exec";
+  document.getElementById("reportsLink").href = GOOGLE_SCRIPT_URL + "?view=reports";
+  const academicYearSelect = document.getElementById("academicYear");
+  const semesterTypeSelect = document.getElementById("semesterType");
+  const semesterSelect = document.getElementById("semester");
+  const SEMESTERS = {Even: ["II", "IV"]};
+
+  const collegeData = [{"zone": "I", "district": "Vizianagaram", "college": "GOVERNMENT DEGREE COLLEGE, CHEEPURUPALLI", "officialCollege": "GOVERNMENT DEGREE COLLEGE, CHEEPURUPALLI", "lecturers": [{"id": "L0320", "salutation": "Dr.", "name": "BODDURU VIJAYAESWARA RAO", "subjects": ["TELUGU"]}, {"id": "L0321", "salutation": "Miss.", "name": "K USHA JYOTHI", "subjects": ["ENGLISH"]}, {"id": "L0322", "salutation": "Dr.", "name": "KANTIMAHANTI JWALAMUKHI", "subjects": ["ZOOLOGY"]}, {"id": "L0323", "salutation": "Mr.", "name": "MANDAPATI RAMESH KUMAR", "subjects": ["PHYSICS"]}, {"id": "L0324", "salutation": "Dr.", "name": "PEDDADA SUJATHA", "subjects": ["CHEMISTRY"]}, {"id": "L0325", "salutation": "Dr.", "name": "RAPAKA PRAMEELA", "subjects": ["BOTANY"]}]}];
+
+  const programmes = ["B.A", "B.Com", "B.Sc"];
+  const programmeCourses = {
+  "B.A": [
+    "Anthropology",
+    "Archeology",
+    "Economics",
+    "Hindi",
+    "History",
+    "Human Resource Management",
+    "Industrial Relations & Personnel Management",
+    "Journalism and Mass Communication",
+    "Mathematics",
+    "Philosophy",
+    "Political Science",
+    "Psychology",
+    "Public Administration",
+    "Public Policy",
+    "Rural Development",
+    "Sanskrit",
+    "Social Work",
+    "Sociology",
+    "Special English",
+    "Special Hindi",
+    "Special Oriya",
+    "Special Sanskrit",
+    "Special Telugu",
+    "Special Urdu",
+    "Statistics",
+    "Tourism and Travel Management"
+  ],
+  "B.Com": [
+    "Accounting",
+    "Banking",
+    "Business Process Management",
+    "Commerce",
+    "Computer Application",
+    "Digital Marketing",
+    "Finance",
+    "Logistics",
+    "Tax Procedures & Practice"
+  ],
+  "B.Sc": [
+    "Agriculture and Rural Development",
+    "Analytical Chemistry",
+    "Animation",
+    "Applied Mathematics",
+    "Aquaculture",
+    "Artificial Intelligence",
+    "Biochemistry",
+    "Bioinformatics",
+    "Biomedical Science",
+    "Biotechnology",
+    "Botany",
+    "Cement Sciences",
+    "Chemistry",
+    "Computer Science",
+    "Computer Science & Cognitive Systems (TCS Collaboration)",
+    "Cyber Forensics",
+    "Dairy Science",
+    "Data Analytics",
+    "Data Science",
+    "Electronics",
+    "Environmental Science",
+    "Fisheries",
+    "Food Science and Nutrition",
+    "Food Science and Technology",
+    "Forensic Science",
+    "Geography",
+    "Geology",
+    "Home Science",
+    "Human Genetics",
+    "Industrial Chemistry",
+    "Industrial Electronics",
+    "Information Technology",
+    "Internet of Things",
+    "Mathematics",
+    "Medical Lab Technology",
+    "Medical Technology",
+    "Microbiology",
+    "Mineral Beneficiation",
+    "Multimedia",
+    "Nutrition",
+    "Organic Chemistry",
+    "Organic Farming",
+    "Physics",
+    "Plant Biotechnology",
+    "Psychology",
+    "Sericulture",
+    "Statistics",
+    "Visual Communication",
+    "Zoology"
+  ]
+};
+
+  const questions = [{"en": "Are the objectives and outcomes stated for the Programme helping you?", "te": "ప్రోగ్రామ్‌కు నిర్దేశించిన లక్ష్యాలు మరియు అభ్యాస ఫలితాలు మీ అభ్యాసానికి ఎంతవరకు సహాయపడుతున్నాయి?"}, {"en": "How do you rate the sequence of the Courses that you have studied in the Programme?", "te": "ప్రోగ్రామ్‌లో మీరు అభ్యసించిన కోర్సుల క్రమపద్ధతిని మీరు ఎలా అంచనా వేస్తారు?"}, {"en": "How do you rate the structure of the CBCS curriculum?", "te": "CBCS పాఠ్యప్రణాళిక నిర్మాణాన్ని మీరు ఎలా అంచనా వేస్తారు?"}, {"en": "The course curriculum has made me interested in the subject area.", "te": "కోర్సు పాఠ్యప్రణాళిక సబ్జెక్టు రంగంపై మీ ఆసక్తిని పెంచడంలో ఎంతవరకు సహాయపడింది?"}, {"en": "How do you rate the proportion of Courses having LAB components?", "te": "ప్రయోగశాల (LAB) భాగాలు ఉన్న కోర్సుల శాతాన్ని మీరు ఎలా అంచనా వేస్తారు?"}, {"en": "Is the curriculum contributing towards projects and research?", "te": "పాఠ్యప్రణాళిక ప్రాజెక్టులు మరియు పరిశోధనకు ఎంతవరకు దోహదపడుతోంది?"}, {"en": "Infrastructural facilities such as classrooms, library and laboratories with the required software and hardware are available in the department for smooth academic progress.", "te": "సజావుగా విద్యాభ్యాసం కొనసాగేందుకు అవసరమైన సాఫ్ట్‌వేర్, హార్డ్‌వేర్‌తో కూడిన తరగతి గదులు, గ్రంథాలయం మరియు ప్రయోగశాల సౌకర్యాలు విభాగంలో అందుబాటులో ఉన్నాయి."}, {"en": "Tests and examinations are conducted on time with proper coverage of all units in the curriculum.", "te": "పాఠ్యప్రణాళికలోని అన్ని యూనిట్లను తగిన విధంగా కవర్ చేస్తూ పరీక్షలు సమయానికి నిర్వహించబడుతున్నాయి."}, {"en": "How do you rate the enrichment of employability skills through the curriculum?", "te": "పాఠ్యప్రణాళిక ఉపాధి నైపుణ్యాల అభివృద్ధికి ఎంతవరకు దోహదపడుతోంది?"}
+  ,{
+    "en": "How do you rate the relevance of the curriculum to current industry, professional and societal needs?",
+    "te": "ప్రస్తుత పరిశ్రమ, వృత్తిపరమైన మరియు సామాజిక అవసరాలకు పాఠ్యప్రణాళిక అనుసంధానాన్ని మీరు ఎలా అంచనా వేస్తారు?"
+  }
+];
+
+  const ratingOptions = [
+    { roman:"I", label:"Poor", te:"తక్కువ స్థాయి", score:1 },
+    { roman:"II", label:"Satisfactory", te:"సంతృప్తికరం", score:2 },
+    { roman:"III", label:"Good", te:"మంచిది", score:3 },
+    { roman:"IV", label:"Very Good", te:"చాలా మంచిది", score:4 },
+    { roman:"V", label:"Excellent", te:"అత్యుత్తమం", score:5 }
+  ];
+
+  const form = document.getElementById("feedbackForm");
+  const questionCards = document.getElementById("questionCards");
+  const totalScore = document.getElementById("totalScore");
+  const totalScoreDisplay = document.getElementById("totalScoreDisplay");
+  const progressBar = document.getElementById("progressBar");
+  const progressText = document.getElementById("progressText");
+  const statusEl = document.getElementById("status");
+  const submitBtn = document.getElementById("submitBtn");
+  const successModal = document.getElementById("successModal");
+  const successCloseBtn = document.getElementById("successCloseBtn");
+
+  const zoneSelect = document.getElementById("zone");
+  const districtSelect = document.getElementById("district");
+  const collegeSelect = document.getElementById("college");
+  const yearSelect = document.getElementById("year");
+  const programmeSelect = document.getElementById("programme");
+  const courseSelect = document.getElementById("course");
+  const classNameInput = document.getElementById("className");
+  const dateInput = document.getElementById("date");
+  const studentNameInput = document.getElementById("studentName");
+  const suggestionsInput = document.getElementById("suggestions");
+
+  function uniqueInOrder(items) { return [...new Set(items)]; }
+  function resetDependentSelect(select, placeholder) {
+    select.innerHTML = `<option value="" selected disabled>${placeholder}</option>`;
+    select.disabled = true;
+  }
+  function addOptions(select, items) {
+    items.forEach(item => {
+      const option = document.createElement("option");
+      option.value = item;
+      option.textContent = item;
+      select.appendChild(option);
+    });
+  }
+  function populateZones() {
+    zoneSelect.replaceChildren(new Option("I", "I", true, true));
+    districtSelect.replaceChildren(new Option("Vizianagaram", "Vizianagaram", true, true));
+    collegeSelect.replaceChildren(new Option("GOVERNMENT DEGREE COLLEGE, CHEEPURUPALLI", "GOVERNMENT DEGREE COLLEGE, CHEEPURUPALLI", true, true));
+    zoneSelect.disabled = districtSelect.disabled = collegeSelect.disabled = true;
+  }
+  function updateDistrictDropdown() {
+    resetDependentSelect(districtSelect, "Select district");
+    resetDependentSelect(collegeSelect, "Select college");
+    if (!zoneSelect.value) return;
+    addOptions(
+      districtSelect,
+      uniqueInOrder(collegeData.filter(r => r.zone === zoneSelect.value).map(r => r.district))
+    );
+    districtSelect.disabled = false;
+  }
+  function updateCollegeDropdown() {
+    resetDependentSelect(collegeSelect, "Select college");
+    if (!zoneSelect.value || !districtSelect.value) return;
+    addOptions(
+      collegeSelect,
+      collegeData
+        .filter(r => r.zone === zoneSelect.value && r.district === districtSelect.value)
+        .map(r => r.college)
+    );
+    collegeSelect.disabled = false;
+  }
+  function getSelectedCollegeRecord() {
+    return collegeData.find(r =>
+      r.zone === zoneSelect.value &&
+      r.district === districtSelect.value &&
+      r.college === collegeSelect.value
+    ) || null;
+  }
+  function populateSimpleSelect(select, items) {
+    items.forEach(item => {
+      const option = document.createElement("option");
+      option.value = item;
+      option.textContent = item;
+      select.appendChild(option);
+    });
+  }
+  function updateCourseDropdown() {
+    courseSelect.innerHTML = '<option value="" selected disabled>Select course / major</option>';
+    courseSelect.disabled = true;
+    if (!programmeSelect.value || !programmeCourses[programmeSelect.value]) {
+      courseSelect.innerHTML = '<option value="" selected disabled>Select programme first</option>';
+      updateClassAndProgrammeName();
+      return;
+    }
+    addOptions(courseSelect, programmeCourses[programmeSelect.value]);
+    courseSelect.disabled = false;
+    updateClassAndProgrammeName();
+  }
+  function updateClassAndProgrammeName() {
+    const semester = semesterSelect.value;
+    yearSelect.value = ({I:"I",II:"I",III:"II",IV:"II",V:"III",VI:"III"})[semester] || "";
+    const year = yearSelect.value || "";
+    const programme = programmeSelect.value || "";
+    const course = courseSelect.value || "";
+    classNameInput.value = (year && programme && course)
+      ? `${year} ${programme} ${course} (Major) · Semester ${semester}` : "";
+  }
+  function updateSemesterDropdown() {
+    semesterSelect.replaceChildren(new Option("Select semester", ""));
+    const options = SEMESTERS[semesterTypeSelect.value] || [];
+    options.forEach(value => semesterSelect.add(new Option(value, value)));
+    semesterSelect.disabled = !options.length;
+    updateClassAndProgrammeName();
+  }
+  function renderQuestions() {
+    questionCards.innerHTML = questions.map((q, idx) => {
+      const n = idx + 1;
+      return `
+        <article class="question-card" id="card-q${n}">
+          <div class="question-top">
+            <div class="q-number">${n}</div>
+            <div>
+              <div class="q-en">${q.en}</div>
+              <div class="q-te" lang="te">${q.te}</div>
+            </div>
+          </div>
+          <div class="rating-group" role="radiogroup" aria-label="Question ${n} rating">
+            ${ratingOptions.map(opt => `
+              <div class="rating-option">
+                <input id="q${n}-${opt.score}" type="radio" name="q${n}" value="${opt.score}" required>
+                <label for="q${n}-${opt.score}">
+                  <b>${opt.roman}</b>
+                  <small>${opt.label}</small>
+                </label>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+  function setToday() {
+    dateInput.value = new Date().toLocaleDateString("en-CA");
+  }
+  function updateSummary() {
+    let total = 0;
+    let answered = 0;
+    for (let i = 1; i <= questions.length; i++) {
+      const selected = form.querySelector(`input[name="q${i}"]:checked`);
+      const card = document.getElementById(`card-q${i}`);
+      if (selected) {
+        total += Number(selected.value);
+        answered++;
+        card.classList.add("answered");
+        card.classList.remove("error-card");
+      } else {
+        card.classList.remove("answered");
+      }
+    }
+    totalScore.value = total;
+    totalScoreDisplay.textContent = `${total} / 50`;
+    progressText.textContent = `${answered} / 10`;
+    progressBar.style.width = `${(answered / 10) * 100}%`;
+  }
+  function focusFirstMissingQuestion() {
+    for (let i = 1; i <= questions.length; i++) {
+      if (!form.querySelector(`input[name="q${i}"]:checked`)) {
+        const card = document.getElementById(`card-q${i}`);
+        card.classList.add("error-card");
+        card.scrollIntoView({behavior:"smooth", block:"center"});
+        return false;
+      }
+    }
+    return true;
+  }
+  function openSuccessModal() {
+    successModal.classList.add("show");
+    successModal.setAttribute("aria-hidden","false");
+  }
+  function closeSuccessModal() {
+    successModal.classList.remove("show");
+    successModal.setAttribute("aria-hidden","true");
+    submitBtn.focus();
+  }
+  successCloseBtn.addEventListener("click", closeSuccessModal);
+  successModal.addEventListener("click", e => { if (e.target === successModal) closeSuccessModal(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && successModal.classList.contains("show")) closeSuccessModal(); });
+
+  populateZones();
+  updateSemesterDropdown();
+  populateSimpleSelect(programmeSelect, programmes);
+  updateCourseDropdown();
+  renderQuestions();
+  setToday();
+  updateSummary();
+
+  zoneSelect.addEventListener("change", updateDistrictDropdown);
+  districtSelect.addEventListener("change", updateCollegeDropdown);
+  semesterTypeSelect.addEventListener("change", updateSemesterDropdown);
+  semesterSelect.addEventListener("change", updateClassAndProgrammeName);
+  programmeSelect.addEventListener("change", updateCourseDropdown);
+  courseSelect.addEventListener("change", updateClassAndProgrammeName);
+  form.addEventListener("change", updateSummary);
+
+  function lookupReceipt(responseId) {
+    return new Promise((resolve, reject) => {
+      const callback = "curriculumReceipt_" + Math.random().toString(36).slice(2);
+      const script = document.createElement("script");
+      const timeout = setTimeout(() => finish(new Error("Receipt check timed out.")), 12000);
+      function finish(error, result) {
+        clearTimeout(timeout);
+        delete window[callback];
+        script.remove();
+        if (error) reject(error); else resolve(result);
+      }
+      window[callback] = result => finish(null, result);
+      script.onerror = () => finish(new Error("Receipt check failed."));
+      const url = new URL(GOOGLE_SCRIPT_URL);
+      url.searchParams.set("formType", "curriculum");
+      url.searchParams.set("action", "receipt");
+      url.searchParams.set("responseId", responseId);
+      url.searchParams.set("callback", callback);
+      script.src = url.toString();
+      document.head.appendChild(script);
+    });
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    statusEl.className = "status";
+    statusEl.textContent = "";
+
+    updateClassAndProgrammeName();
+
+    const requiredIds = [
+      "zone","district","college",
+      "academicYear","semesterType","semester","programme","course","studentName","date","suggestions"
+    ];
+    const valid = requiredIds.every(id => document.getElementById(id).reportValidity());
+    if (!valid) return;
+
+    if (!focusFirstMissingQuestion()) {
+      statusEl.className = "status error";
+      statusEl.textContent = "Please answer all 10 curriculum feedback items.";
+      return;
+    }
+
+    const selectedCollege = getSelectedCollegeRecord();
+
+    if (!selectedCollege) {
+      statusEl.className = "status error";
+      statusEl.textContent = "Please select a valid college.";
+      return;
+    }
+
+    const data = {
+      formType: "curriculum",
+      academicYear: academicYearSelect.value,
+      semesterType: semesterTypeSelect.value,
+      semester: semesterSelect.value,
+      zone: zoneSelect.value.trim(),
+      district: districtSelect.value.trim(),
+      college: collegeSelect.value.trim(),
+      officialCollege: (selectedCollege.officialCollege || "").trim(),
+      year: yearSelect.value.trim(),
+      programme: programmeSelect.value.trim(),
+      course: courseSelect.value.trim(),
+      className: classNameInput.value.trim(),
+      studentName: studentNameInput.value.trim(),
+      date: dateInput.value,
+      suggestions: suggestionsInput.value.trim(),
+      totalScore: totalScore.value
+    };
+
+    for (let i = 1; i <= 10; i++) {
+      data[`q${i}`] = form.querySelector(`input[name="q${i}"]:checked`).value;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "SUBMITTING...";
+
+    try {
+      // The POST is opaque across origins. Confirm the saved row through
+      // a read-only JSONP receipt before showing success or clearing answers.
+      const responseId = "CFB-" + crypto.randomUUID();
+      data.responseId = responseId;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST", mode: "no-cors", redirect: "follow",
+          headers: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
+          body: new URLSearchParams(data).toString(), signal: controller.signal
+        });
+      } finally { clearTimeout(timeoutId); }
+
+      let receipt;
+      for (let attempt = 0; attempt < 12; attempt++) {
+        receipt = await lookupReceipt(responseId);
+        if (receipt.found && receipt.pdfStatus !== "Generating") break;
+        await new Promise(resolve => setTimeout(resolve, 2500));
+      }
+      if (!receipt || !receipt.found) {
+        throw new Error("We could not confirm the submission. Please check the response sheet before submitting again. Reference: " + responseId);
+      }
+      if (receipt.pdfStatus !== "Generated") {
+        throw new Error("Feedback was saved, but the PDF needs attention (" + receipt.pdfStatus + "). Reference: " + responseId);
+      }
+      form.reset();
+      updateSemesterDropdown();
+      populateZones();
+      updateCourseDropdown();
+      updateClassAndProgrammeName();
+      setToday();
+      updateSummary();
+      openSuccessModal();
+    } catch (error) {
+      console.error(error);
+      statusEl.className = "status error";
+      statusEl.textContent = error.message || "Submission could not be confirmed. Check the response sheet before trying again.";
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "SUBMIT CURRICULUM FEEDBACK";
+    }
+  });
+</script>
+</body>
+</html>
