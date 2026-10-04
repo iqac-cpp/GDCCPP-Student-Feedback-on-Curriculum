@@ -331,6 +331,7 @@
               <label for="course">Course / Major</label>
               <select id="course" name="course" required disabled><option value="" selected disabled>Select programme first</option></select>
             </div>
+            <div class="field"><label for="subject">Subject</label><select id="subject" name="subject" required><option value="" selected>Select subject</option><option>English</option><option>Telugu</option><option>Mathematics</option><option>Physics</option><option>Chemistry</option><option>Computer Science</option><option>Botany</option><option>Zoology</option><option>History</option><option>Economics</option><option>Commerce</option><option>Computer Applications</option></select></div>
             <input id="className" name="className" type="hidden">
 
             <div class="field student-name">
@@ -742,7 +743,7 @@
 
     const requiredIds = [
       "zone","district","college",
-      "academicYear","semesterType","semester","programme","course","studentName","date","suggestions"
+      "academicYear","semesterType","semester","programme","course","subject","studentName","date","suggestions"
     ];
     const valid = requiredIds.every(id => document.getElementById(id).reportValidity());
     if (!valid) return;
@@ -773,6 +774,7 @@
       year: yearSelect.value.trim(),
       programme: programmeSelect.value.trim(),
       course: courseSelect.value.trim(),
+      subject: document.getElementById("subject").value,
       className: classNameInput.value.trim(),
       studentName: studentNameInput.value.trim(),
       date: dateInput.value,
