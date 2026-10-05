@@ -58,8 +58,8 @@
     }
     .field { grid-column:span 4; }
     .field.college { grid-column:span 4; }
-        .field.student-name { grid-column:span 6; }
-        label {
+    .field.student-name { grid-column:span 6; }
+    label {
       display:block;
       margin-bottom:6px;
       color:#38516a;
@@ -137,91 +137,54 @@
     }
     .rating-option label b { color:var(--navy); font-size:12px; }
     .rating-option label small { color:var(--muted); font-size:9px; }
-    /* Question-level options stay neutral.
-       The color meaning is shown once in the rating guide above Question 1. */
     .rating-option label {
       background:#fff;
       border-color:var(--line);
       color:var(--text);
       transition:all .15s ease;
     }
-
-    .rating-option label b {
-      color:var(--navy);
-    }
-
-    .rating-option label small {
-      color:var(--muted);
-    }
-
+    .rating-option label b { color:var(--navy); }
+    .rating-option label small { color:var(--muted); }
     .rating-option label:hover {
       background:#f3f7fa;
       border-color:#9fb6c8;
     }
 
-    /* Selected option uses the same colour as the rating scale above. */
     .rating-option input[value="1"]:checked + label {
-      background:#d92d27;
-      border-color:#c62520;
-      color:#fff;
+      background:#d92d27; border-color:#c62520; color:#fff;
       outline:3px solid rgba(217,45,39,.20);
     }
-
     .rating-option input[value="2"]:checked + label {
-      background:#f2a3a6;
-      border-color:#e38e92;
-      color:#5b2427;
+      background:#f2a3a6; border-color:#e38e92; color:#5b2427;
       outline:3px solid rgba(242,163,166,.28);
     }
-
     .rating-option input[value="3"]:checked + label {
-      background:#b9efd1;
-      border-color:#9cdeb9;
-      color:#24543a;
+      background:#b9efd1; border-color:#9cdeb9; color:#24543a;
       outline:3px solid rgba(185,239,209,.38);
     }
-
     .rating-option input[value="4"]:checked + label {
-      background:#5ad47d;
-      border-color:#4bc16e;
-      color:#174c2a;
+      background:#5ad47d; border-color:#4bc16e; color:#174c2a;
       outline:3px solid rgba(90,212,125,.28);
     }
-
     .rating-option input[value="5"]:checked + label {
-      background:#206b3c;
-      border-color:#185b32;
-      color:#fff;
+      background:#206b3c; border-color:#185b32; color:#fff;
       outline:3px solid rgba(32,107,60,.24);
     }
-
     .rating-option input:checked + label {
       outline-offset:1px;
       transform:translateY(-1px);
       box-shadow:0 4px 10px rgba(21,58,91,.14);
     }
-
     .rating-option input[value="1"]:checked + label b,
     .rating-option input[value="1"]:checked + label small,
     .rating-option input[value="5"]:checked + label b,
-    .rating-option input[value="5"]:checked + label small {
-      color:#fff;
-    }
-
+    .rating-option input[value="5"]:checked + label small { color:#fff; }
     .rating-option input[value="2"]:checked + label b,
-    .rating-option input[value="2"]:checked + label small {
-      color:#5b2427;
-    }
-
+    .rating-option input[value="2"]:checked + label small { color:#5b2427; }
     .rating-option input[value="3"]:checked + label b,
-    .rating-option input[value="3"]:checked + label small {
-      color:#24543a;
-    }
-
+    .rating-option input[value="3"]:checked + label small { color:#24543a; }
     .rating-option input[value="4"]:checked + label b,
-    .rating-option input[value="4"]:checked + label small {
-      color:#174c2a;
-    }
+    .rating-option input[value="4"]:checked + label small { color:#174c2a; }
     .question-card.answered { border-color:#91c5a6; }
     .question-card.error-card { border-color:#d8655d; box-shadow:0 0 0 2px rgba(180,35,24,.08); }
     .suggestion-panel { margin-top:14px; }
@@ -265,7 +228,7 @@
       background:var(--navy); color:#fff; font-weight:800; cursor:pointer;
     }
     @media(max-width:760px) {
-      .field, .field.college, .field.lecturer, .field.student-name,       .scale-inner { grid-template-columns:1fr; }
+      .field, .field.college, .field.lecturer, .field.student-name, .scale-inner { grid-template-columns:1fr; }
       .rating-group { padding-left:13px; }
     }
     @media(max-width:520px) {
@@ -322,7 +285,7 @@
             <div class="field"><label for="academicYear">Academic Year</label><select id="academicYear" name="academicYear" required disabled><option value="2025-26" selected>2025-26</option></select></div>
             <div class="field"><label for="semesterType">Type of Semester</label><select id="semesterType" name="semesterType" required disabled><option value="Even" selected>Even</option></select></div>
             <div class="field"><label for="semester">Semester</label><select id="semester" name="semester" required disabled><option value="">Select semester type first</option></select></div>
-<input id="year" name="year" type="hidden">
+            <input id="year" name="year" type="hidden">
             <div class="field">
               <label for="programme">Programme</label>
               <select id="programme" name="programme" required><option value="" selected disabled>Select programme</option></select>
@@ -338,7 +301,7 @@
               <label for="studentName">Name of the Student *</label>
               <input id="studentName" name="studentName" type="text" maxlength="120" required placeholder="Enter student name">
             </div>
-<div class="field">
+            <div class="field">
               <label for="date">Date</label>
               <input id="date" name="date" type="date" required>
             </div>
@@ -634,11 +597,12 @@
   courseSelect.addEventListener("change", updateClassAndProgrammeName);
   form.addEventListener("change", updateSummary);
 
-  function lookupReceipt(responseId) {
+  // Generic JSONP helper (the web app answers GET requests with a callback).
+  function jsonp(prefix, params, timeoutMs) {
     return new Promise((resolve, reject) => {
-      const callback = "curriculumReceipt_" + Math.random().toString(36).slice(2);
+      const callback = prefix + Math.random().toString(36).slice(2);
       const script = document.createElement("script");
-      const timeout = setTimeout(() => finish(new Error("Receipt check timed out.")), 12000);
+      const timeout = setTimeout(() => finish(new Error("Request timed out.")), timeoutMs || 12000);
       function finish(error, result) {
         clearTimeout(timeout);
         delete window[callback];
@@ -646,15 +610,35 @@
         if (error) reject(error); else resolve(result);
       }
       window[callback] = result => finish(null, result);
-      script.onerror = () => finish(new Error("Receipt check failed."));
+      script.onerror = () => finish(new Error("Request failed."));
       const url = new URL(GOOGLE_SCRIPT_URL);
-      url.searchParams.set("formType", "curriculum");
-      url.searchParams.set("action", "receipt");
-      url.searchParams.set("responseId", responseId);
+      Object.keys(params).forEach(k => url.searchParams.set(k, params[k]));
       url.searchParams.set("callback", callback);
       script.src = url.toString();
       document.head.appendChild(script);
     });
+  }
+
+  function lookupReceipt(responseId) {
+    return jsonp("curriculumReceipt_", {
+      formType: "curriculum", action: "receipt", responseId: responseId
+    }, 12000);
+  }
+
+  // Asks the server whether this student has already submitted.
+  function checkDuplicate(data) {
+    return jsonp("curriculumCheck_", {
+      formType: "curriculum", action: "check",
+      studentName: data.studentName,
+      college: data.college,
+      officialCollege: data.officialCollege,
+      academicYear: data.academicYear,
+      semester: data.semester,
+      programme: data.programme,
+      course: data.course,
+      subject: data.subject,
+      className: data.className
+    }, 15000);
   }
 
   form.addEventListener("submit", async (event) => {
@@ -713,8 +697,21 @@
     submitBtn.textContent = "SUBMITTING...";
 
     try {
-      // The POST is opaque across origins. Confirm the saved row through
-      // a read-only JSONP receipt before showing success or clearing answers.
+      // Step 1: ask the server if this student has already submitted.
+      // If the check itself fails (network), carry on: the server
+      // enforces the rule again when it saves.
+      let precheck = null;
+      try {
+        precheck = await checkDuplicate(data);
+      } catch (checkErr) {
+        console.warn("Duplicate pre-check unavailable:", checkErr);
+      }
+      if (precheck && precheck.duplicate) {
+        throw new Error(precheck.message || "Feedback has already been submitted by this student.");
+      }
+
+      // Step 2: POST is opaque across origins. Confirm the saved row
+      // through a read-only JSONP receipt before showing success.
       const responseId = "CFB-" + crypto.randomUUID();
       data.responseId = responseId;
       const controller = new AbortController();
@@ -730,6 +727,10 @@
       let receipt;
       for (let attempt = 0; attempt < 12; attempt++) {
         receipt = await lookupReceipt(responseId);
+        // Server rejected it as a duplicate (e.g. two submissions at once).
+        if (receipt.duplicate) {
+          throw new Error(receipt.message || "Feedback has already been submitted by this student.");
+        }
         if (receipt.found && receipt.pdfStatus !== "Generating") break;
         await new Promise(resolve => setTimeout(resolve, 2500));
       }
