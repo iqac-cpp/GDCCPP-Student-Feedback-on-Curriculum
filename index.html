@@ -355,7 +355,7 @@
       <div class="success-icon">✓</div>
       <h2>Curriculum Feedback Submitted</h2>
       <p>Your curriculum feedback has been submitted successfully. Thank you for your valuable suggestions.</p>
-      <p style="margin-top:8px;font-size:11px;">Your response has been sent to the college feedback database.</p>
+      <p id="successDetails" style="margin-top:8px;font-size:11px;">Your response has been sent to the college feedback database.</p>
       <button id="successCloseBtn" class="success-close-btn" type="button">CLOSE</button>
     </div>
   </div>
@@ -641,6 +641,45 @@
     }, 15000);
   }
 
+
+  // Confirm the saved sheet row even if the POST or a receipt check times out.
+  // Send exactly one POST; polling never submits feedback again.
+  async function submitAndConfirm(data, onProgress) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
+    onProgress("Saving your feedback. Please keep this page open.");
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST", mode: "no-cors", redirect: "follow",
+        headers: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
+        body: new URLSearchParams(data).toString(), signal: controller.signal
+      });
+    } catch (error) {
+      console.warn("POST confirmation unavailable; checking the saved response.", error);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+    const deadline = Date.now() + 360000;
+    while (Date.now() < deadline) {
+      onProgress("Checking that your feedback has been saved. Please do not submit again.");
+      let receipt;
+      try {
+        receipt = await lookupReceipt(data.responseId);
+      } catch (error) {
+        console.warn("Receipt check unavailable; retrying.", error);
+      }
+      if (receipt && receipt.duplicate) {
+        throw new Error(receipt.message || "Feedback has already been submitted by this student.");
+      }
+      // A saved response is successful even while its PDF is being generated.
+      if (receipt && receipt.found) return receipt;
+      if (Date.now() < deadline) {
+        await new Promise(resolve => setTimeout(resolve, Math.min(4000, deadline - Date.now())));
+      }
+    }
+    throw new Error("We could not confirm the submission after waiting. Please check the response sheet before submitting again. Reference: " + data.responseId);
+  }
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     statusEl.className = "status";
@@ -710,36 +749,18 @@
         throw new Error(precheck.message || "Feedback has already been submitted by this student.");
       }
 
-      // Step 2: POST is opaque across origins. Confirm the saved row
-      // through a read-only JSONP receipt before showing success.
       const responseId = "CFB-" + crypto.randomUUID();
       data.responseId = responseId;
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
-      try {
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST", mode: "no-cors", redirect: "follow",
-          headers: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
-          body: new URLSearchParams(data).toString(), signal: controller.signal
-        });
-      } finally { clearTimeout(timeoutId); }
-
-      let receipt;
-      for (let attempt = 0; attempt < 12; attempt++) {
-        receipt = await lookupReceipt(responseId);
-        // Server rejected it as a duplicate (e.g. two submissions at once).
-        if (receipt.duplicate) {
-          throw new Error(receipt.message || "Feedback has already been submitted by this student.");
-        }
-        if (receipt.found && receipt.pdfStatus !== "Generating") break;
-        await new Promise(resolve => setTimeout(resolve, 2500));
-      }
-      if (!receipt || !receipt.found) {
-        throw new Error("We could not confirm the submission. Please check the response sheet before submitting again. Reference: " + responseId);
-      }
-      if (receipt.pdfStatus !== "Generated") {
-        throw new Error("Feedback was saved, but the PDF needs attention (" + receipt.pdfStatus + "). Reference: " + responseId);
-      }
+      const receipt = await submitAndConfirm(data, message => {
+        statusEl.textContent = message;
+      });
+      const pdfNote = receipt.pdfStatus === "Generated"
+        ? "Your feedback and PDF have been saved."
+        : receipt.pdfStatus === "Generating"
+          ? "Your feedback has been saved. The PDF is still being generated. Please do not submit again."
+          : "Your feedback has been saved. The college can check the PDF status in Reports. Please do not submit again.";
+      document.getElementById("successDetails").textContent = pdfNote;
+      statusEl.textContent = "";
       form.reset();
       updateSemesterDropdown();
       populateZones();
